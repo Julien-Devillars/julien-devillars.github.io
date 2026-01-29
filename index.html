@@ -1,11 +1,326 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-	<meta http-equiv="refresh" content="0; URL=https://juliendevillars.wixsite.com/portfolio">
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Birthday Escape</title>
+	<style>
+		:root {
+			--bg: #0f1222;
+			--card: #171a2e;
+			--accent: #ff7aa2;
+			--accent-2: #7cf3ff;
+			--text: #eef1f6;
+			--muted: #9aa3b2;
+			--success: #56f08a;
+			--danger: #ff6b6b;
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+			background: radial-gradient(1200px 600px at 10% -10%, #262b5a, transparent), var(--bg);
+			color: var(--text);
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 24px;
+		}
+
+		.container {
+			width: min(980px, 100%);
+			background: var(--card);
+			border-radius: 18px;
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+			padding: 28px;
+			display: grid;
+			gap: 24px;
+		}
+
+		header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 16px;
+			flex-wrap: wrap;
+		}
+
+		.title {
+			font-size: clamp(22px, 3vw, 30px);
+			font-weight: 700;
+			letter-spacing: 0.4px;
+		}
+
+		.subtitle {
+			color: var(--muted);
+			font-size: 14px;
+		}
+
+		.progress {
+			background: #0c0f1f;
+			border-radius: 999px;
+			height: 10px;
+			overflow: hidden;
+		}
+
+		.progress > span {
+			display: block;
+			height: 100%;
+			background: linear-gradient(90deg, var(--accent), var(--accent-2));
+			width: 0;
+			transition: width 0.3s ease;
+		}
+
+		.video-card {
+			background: #0b0f22;
+			border-radius: 14px;
+			padding: 16px;
+			display: grid;
+			gap: 16px;
+		}
+
+		iframe {
+			width: 100%;
+			aspect-ratio: 16 / 9;
+			border: none;
+			border-radius: 12px;
+			background: #000;
+		}
+
+		.clue {
+			font-size: 16px;
+			color: var(--text);
+		}
+
+		.controls {
+			display: grid;
+			gap: 12px;
+		}
+
+		.input-row {
+			display: grid;
+			grid-template-columns: 1fr auto;
+			gap: 12px;
+		}
+
+		input[type="text"] {
+			padding: 12px 14px;
+			border-radius: 10px;
+			border: 1px solid #2a2f4f;
+			background: #0f1328;
+			color: var(--text);
+			font-size: 15px;
+			outline: none;
+		}
+
+		input[type="text"]:focus {
+			border-color: var(--accent-2);
+			box-shadow: 0 0 0 2px rgba(124, 243, 255, 0.2);
+		}
+
+		button {
+			padding: 12px 18px;
+			border-radius: 10px;
+			border: none;
+			background: linear-gradient(120deg, var(--accent), var(--accent-2));
+			color: #0b0f1f;
+			font-weight: 700;
+			cursor: pointer;
+			transition: transform 0.15s ease;
+		}
+
+		button:active {
+			transform: scale(0.98);
+		}
+
+		.secondary {
+			background: #0f1328;
+			color: var(--muted);
+			border: 1px solid #2a2f4f;
+		}
+
+		.feedback {
+			min-height: 24px;
+			font-size: 14px;
+			color: var(--muted);
+		}
+
+		.feedback.success {
+			color: var(--success);
+		}
+
+		.feedback.error {
+			color: var(--danger);
+		}
+
+		.footer {
+			display: flex;
+			gap: 12px;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.link {
+			color: var(--accent-2);
+			text-decoration: none;
+		}
+	</style>
 </head>
 
 <body>
+	<div class="container">
+		<header>
+			<div>
+				<div class="title">Birthday Escape</div>
+				<div class="subtitle">Solve each video clue to unlock the next one.</div>
+			</div>
+			<div style="min-width: 200px; flex: 1;">
+				<div class="progress" aria-label="Progress">
+					<span id="progressBar"></span>
+				</div>
+			</div>
+		</header>
+
+		<section class="video-card">
+			<iframe id="videoFrame" title="Clue video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+			<div class="clue" id="clueText"></div>
+		</section>
+
+		<section class="controls">
+			<div class="input-row">
+				<input id="answerInput" type="text" placeholder="Type the answer from the video" autocomplete="off" />
+				<button id="submitButton" type="button">Unlock</button>
+			</div>
+			<div class="feedback" id="feedback"></div>
+			<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+				<button id="openYoutube" class="secondary" type="button">Open on YouTube</button>
+				<button id="resetProgress" class="secondary" type="button">Reset progress</button>
+			</div>
+		</section>
+
+		<div class="footer">
+			<div>Tip: answers are not case-sensitive.</div>
+			<div>Built with ❤</div>
+		</div>
+	</div>
+
+	<script>
+		const steps = [
+			{
+				id: 1,
+				videoId: "dQw4w9WgXcQ",
+				prompt: "Clue 1: What word is hidden in the video?",
+				answers: ["sunshine", "sun"],
+				successMessage: "Nice! You found the first clue."
+			},
+			{
+				id: 2,
+				videoId: "9bZkp7q19f0",
+				prompt: "Clue 2: Which city is mentioned?",
+				answers: ["paris"],
+				successMessage: "Great! Next video unlocked."
+			},
+			{
+				id: 3,
+				videoId: "3JZ_D3ELwOQ",
+				prompt: "Final clue: What is the secret word?",
+				answers: ["forever"],
+				successMessage: "You did it! Happy birthday!"
+			}
+		];
+
+		const storageKey = "escape-step-index";
+		const videoFrame = document.getElementById("videoFrame");
+		const clueText = document.getElementById("clueText");
+		const answerInput = document.getElementById("answerInput");
+		const feedback = document.getElementById("feedback");
+		const progressBar = document.getElementById("progressBar");
+		const openYoutube = document.getElementById("openYoutube");
+		const resetProgress = document.getElementById("resetProgress");
+
+		const normalize = (value) => value
+			.toLowerCase()
+			.normalize("NFD")
+			.replace(/\p{Diacritic}/gu, "")
+			.replace(/[^a-z0-9]+/g, " ")
+			.trim();
+
+		const getIndex = () => {
+			const raw = localStorage.getItem(storageKey);
+			const idx = Number(raw);
+			return Number.isFinite(idx) && idx >= 0 && idx < steps.length ? idx : 0;
+		};
+
+		const setIndex = (idx) => {
+			localStorage.setItem(storageKey, String(idx));
+		};
+
+		const renderStep = (idx) => {
+			const step = steps[idx];
+			const embedUrl = `https://www.youtube.com/embed/${step.videoId}?rel=0`;
+			videoFrame.src = embedUrl;
+			clueText.textContent = step.prompt;
+			feedback.textContent = "";
+			feedback.className = "feedback";
+			answerInput.value = "";
+			answerInput.focus();
+			const progress = ((idx) / (steps.length)) * 100;
+			progressBar.style.width = `${progress}%`;
+			openYoutube.onclick = () => window.open(`https://youtu.be/${step.videoId}`, "_blank");
+		};
+
+		const unlockNext = () => {
+			let idx = getIndex();
+			const step = steps[idx];
+			const userAnswer = normalize(answerInput.value);
+			const validAnswers = step.answers.map(normalize);
+
+			if (!userAnswer) {
+				feedback.textContent = "Type an answer first.";
+				feedback.className = "feedback error";
+				return;
+			}
+
+			if (validAnswers.includes(userAnswer)) {
+				feedback.textContent = step.successMessage;
+				feedback.className = "feedback success";
+				idx += 1;
+				if (idx >= steps.length) {
+					progressBar.style.width = "100%";
+					clueText.textContent = "All clues solved. Share a smile!";
+					return;
+				}
+				setIndex(idx);
+				setTimeout(() => renderStep(idx), 900);
+				return;
+			}
+
+			feedback.textContent = "Not quite. Try again.";
+			feedback.className = "feedback error";
+		};
+
+		document.getElementById("submitButton").addEventListener("click", unlockNext);
+		answerInput.addEventListener("keydown", (event) => {
+			if (event.key === "Enter") {
+				unlockNext();
+			}
+		});
+
+		resetProgress.addEventListener("click", () => {
+			setIndex(0);
+			renderStep(0);
+		});
+
+		renderStep(getIndex());
+	</script>
 </body>
 
 </html>
