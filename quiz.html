@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini-jeu — Quiz</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0d1a2e;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(0,180,255,0.15);
+      border: 1px solid rgba(0,180,255,0.35);
+      color: #00c8ff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    h1 { font-size: 2rem; color: #e0f4ff; margin-bottom: 6px; }
+    .subtitle { font-size: 0.9rem; color: rgba(255,255,255,0.4); }
+
+    .progress-bar {
+      width: min(560px, 92vw);
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00c8ff, #0070ff);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 36px 32px;
+      width: min(560px, 92vw);
+    }
+
+    .question-num {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    .question-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 28px;
+      color: #e8f4ff;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .choice {
+      padding: 14px 20px;
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      font-size: 1rem;
+      color: #fff;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    }
+
+    .choice:hover:not(:disabled) {
+      border-color: #0070ff;
+      background: rgba(0,112,255,0.12);
+      transform: translateX(4px);
+    }
+
+    .choice.correct {
+      border-color: #00e676;
+      background: rgba(0,230,118,0.12);
+      color: #00e676;
+    }
+
+    .choice.wrong {
+      border-color: #ff4d6d;
+      background: rgba(255,77,109,0.12);
+      color: #ff4d6d;
+    }
+
+    .choice:disabled { cursor: default; }
+
+    .feedback {
+      margin-top: 20px;
+      font-size: 0.92rem;
+      min-height: 1.4em;
+      color: rgba(255,255,255,0.7);
+      font-style: italic;
+    }
+
+    .next-btn {
+      display: none;
+      margin-top: 24px;
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #0070ff, #00c8ff);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .next-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* Écran de résultats */
+    .result-screen {
+      display: none;
+      text-align: center;
+    }
+
+    .result-screen .score-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid #00c8ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+    }
+
+    .score-circle .big { font-size: 2.4rem; font-weight: 800; color: #00c8ff; }
+    .score-circle .small { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+    .result-msg { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
+    .result-sub { font-size: 0.9rem; color: rgba(255,255,255,0.45); margin-bottom: 32px; }
+
+    .back-btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+
+    .back-btn:hover { background: rgba(255,255,255,0.14); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">🧠 Mini-jeu 1</div>
+  <h1>Quiz</h1>
+  <p class="subtitle">Répondez à toutes les questions !</p>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+<div class="card" id="quizCard">
+  <div class="question-num" id="questionNum">Question 1 / 5</div>
+  <div class="question-text" id="questionText"></div>
+  <div class="choices" id="choices"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Question suivante →</button>
+</div>
+
+<div class="card result-screen" id="resultScreen">
+  <div class="score-circle">
+    <span class="big" id="scoreNum">0/5</span>
+    <span class="small">score</span>
+  </div>
+  <div class="result-msg" id="resultMsg"></div>
+  <div class="result-sub" id="resultSub"></div>
+  <a href="index.html" class="back-btn">← Retour à l'accueil</a>
+</div>
+
+<script>
+  // ─── Questions du quiz ─────────────────────────────────────────────
+  // Remplacez ces questions par celles de votre événement !
+  const QUESTIONS = [
+    {
+      q: "En quelle année a été fondé Epic Events ?",
+      choices: ["2018", "2020", "2022", "2024"],
+      answer: 1,
+      explanation: "Epic Events a été fondé en 2020 !"
+    },
+    {
+      q: "Quelle est la capitale de la France ?",
+      choices: ["Lyon", "Paris", "Marseille", "Bordeaux"],
+      answer: 1,
+      explanation: "Paris est bien la capitale de la France."
+    },
+    {
+      q: "Combien font 7 × 8 ?",
+      choices: ["48", "54", "56", "64"],
+      answer: 2,
+      explanation: "7 × 8 = 56, bien joué !"
+    },
+    {
+      q: "Quel est le plus grand océan du monde ?",
+      choices: ["Atlantique", "Indien", "Arctique", "Pacifique"],
+      answer: 3,
+      explanation: "L'océan Pacifique est le plus grand."
+    },
+    {
+      q: "De quelle couleur est le ciel par temps clair ?",
+      choices: ["Vert", "Bleu", "Rouge", "Jaune"],
+      answer: 1,
+      explanation: "Bleu, grâce à la diffusion Rayleigh !"
+    },
+  ];
+
+  let current = 0;
+  let score   = 0;
+  let answered = false;
+
+  function render() {
+    const q = QUESTIONS[current];
+    document.getElementById("questionNum").textContent =
+      `Question ${current + 1} / ${QUESTIONS.length}`;
+    document.getElementById("questionText").textContent = q.q;
+    document.getElementById("feedback").textContent = "";
+    document.getElementById("nextBtn").style.display = "none";
+
+    const choicesEl = document.getElementById("choices");
+    choicesEl.innerHTML = "";
+    q.choices.forEach((c, i) => {
+      const btn = document.createElement("button");
+      btn.className = "choice";
+      btn.textContent = c;
+      btn.onclick = () => answer(i);
+      choicesEl.appendChild(btn);
+    });
+
+    const pct = (current / QUESTIONS.length) * 100;
+    document.getElementById("progressFill").style.width = pct + "%";
+    answered = false;
+  }
+
+  function answer(idx) {
+    if (answered) return;
+    answered = true;
+    const q = QUESTIONS[current];
+    const btns = document.querySelectorAll(".choice");
+    btns.forEach(b => b.disabled = true);
+
+    if (idx === q.answer) {
+      btns[idx].classList.add("correct");
+      score++;
+      document.getElementById("feedback").textContent = "✅ " + q.explanation;
+    } else {
+      btns[idx].classList.add("wrong");
+      btns[q.answer].classList.add("correct");
+      document.getElementById("feedback").textContent = "❌ " + q.explanation;
+    }
+
+    document.getElementById("nextBtn").style.display = "block";
+    if (current === QUESTIONS.length - 1) {
+      document.getElementById("nextBtn").textContent = "Voir mes résultats 🎉";
+    }
+  }
+
+  function nextQuestion() {
+    current++;
+    if (current >= QUESTIONS.length) {
+      showResults();
+    } else {
+      render();
+    }
+  }
+
+  function showResults() {
+    document.getElementById("progressFill").style.width = "100%";
+    document.getElementById("quizCard").style.display = "none";
+    const rs = document.getElementById("resultScreen");
+    rs.style.display = "block";
+
+    document.getElementById("scoreNum").textContent = `${score}/${QUESTIONS.length}`;
+
+    const pct = score / QUESTIONS.length;
+    let msg, sub;
+    if (pct === 1) {
+      msg = "Parfait ! 🏆";
+      sub = "Toutes les bonnes réponses, bravo !";
+    } else if (pct >= 0.6) {
+      msg = "Bien joué ! 🎉";
+      sub = "Bon score, continuez comme ça !";
+    } else {
+      msg = "Pas mal ! 💪";
+      sub = "Vous ferez mieux la prochaine fois !";
+    }
+
+    document.getElementById("resultMsg").textContent = msg;
+    document.getElementById("resultSub").textContent = sub;
+  }
+
+  render();
+</script>
+</body>
+</html>

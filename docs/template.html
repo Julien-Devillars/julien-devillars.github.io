@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic Events — Documentation</title>
+<style>
+  /* ============================================================
+     EPIC EVENTS — Modèle de documentation imprimable (A4 → PDF)
+     Une "brique" = un élément .page = une feuille A4.
+     Conçu pour : aperçu écran agréable + impression/PDF propre.
+     ============================================================ */
+
+  /* ---- Variables de marque ---- */
+  :root {
+    --accent:        #8250ff;
+    --accent-light:  #bf5fff;
+    --ink:           #1a1a22;   /* texte principal (sombre, lisible) */
+    --ink-soft:      #55555f;   /* texte secondaire */
+    --line:          #e3e1ec;   /* filets / séparateurs */
+    --paper:         #ffffff;
+    --tint:          #f6f3ff;   /* fond très léger pour encarts */
+    --font:          'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  /* ---- Format papier : A4, marges d'impression ---- */
+  @page {
+    size: A4;
+    margin: 0;            /* la marge visuelle est gérée dans .page */
+  }
+
+  * { box-sizing: border-box; }
+
+  /* ---- Fond d'aperçu écran (gris autour des pages) ---- */
+  body {
+    margin: 0;
+    background: #34323d;
+    font-family: var(--font);
+    color: var(--ink);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ============================================================
+     LA PAGE = une feuille A4 (210 × 297 mm)
+     ============================================================ */
+  .page {
+    position: relative;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 22mm 20mm 24mm 20mm;   /* marges intérieures */
+    margin: 10mm auto;               /* centrage + espace écran */
+    background: var(--paper);
+    box-shadow: 0 4px 24px rgba(0,0,0,.35);  /* ombre écran seulement */
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Saut de page entre chaque feuille à l'impression */
+  .page { page-break-after: always; break-after: page; }
+  .page:last-of-type { page-break-after: auto; break-after: auto; }
+
+  /* ============================================================
+     EN-TÊTE DE MARQUE
+     ============================================================ */
+  .doc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 6mm;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 8mm;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-mark {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 18px;
+    box-shadow: 0 2px 8px rgba(130,80,255,.4);
+  }
+  .brand-name {
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: .5px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .brand-name small {
+    display: block;
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 3px;
+  }
+  .doc-meta {
+    text-align: right;
+    font-size: 10px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* ============================================================
+     CONTENU
+     ============================================================ */
+  .doc-body { flex: 1; }
+
+  .doc-title {
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 4px 0;
+    color: var(--ink);
+  }
+  .doc-subtitle {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0 0 10mm 0;
+  }
+
+  h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 8mm 0 3mm 0;
+    padding-left: 9px;
+    border-left: 3px solid var(--accent);
+  }
+  p { font-size: 12px; line-height: 1.65; margin: 0 0 3mm 0; }
+
+  .callout {
+    background: var(--tint);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent-light);
+    border-radius: 8px;
+    padding: 5mm 6mm;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 4mm 0;
+  }
+
+  /* ============================================================
+     PIED DE PAGE
+     ============================================================ */
+  .doc-footer {
+    position: absolute;
+    left: 20mm; right: 20mm; bottom: 12mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 4mm;
+    border-top: 1px solid var(--line);
+    font-size: 9px;
+    color: var(--ink-soft);
+  }
+  .doc-footer .accent { color: var(--accent); font-weight: 600; }
+
+  /* ============================================================
+     IMPRESSION : on retire ce qui est "écran seulement"
+     ============================================================ */
+  @media print {
+    body { background: #fff; }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      width: auto;
+      min-height: auto;
+    }
+    .no-print { display: none !important; }
+  }
+
+  /* Barre d'aide à l'écran (cachée à l'impression) */
+  .screen-hint {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font);
+    font-size: 12px;
+    text-align: center;
+    padding: 7px;
+    z-index: 99;
+  }
+  .screen-hint b { font-weight: 700; }
+</style>
+</head>
+<body>
+
+  <div class="screen-hint no-print">
+    Aperçu écran — pour exporter en PDF : <b>Ctrl + P</b> → Destination « Enregistrer en PDF » → Marges « Aucune » → Format A4.
+  </div>
+
+  <!-- ====================================================== -->
+  <!--  BRIQUE 1 : un document = une page A4                  -->
+  <!--  Dupliquez ce bloc .page pour ajouter des documents.   -->
+  <!-- ====================================================== -->
+  <section class="page">
+
+    <header class="doc-header">
+      <div class="brand">
+        <div class="brand-mark">E</div>
+        <div class="brand-name">
+          EPIC EVENTS
+          <small>Lyon</small>
+        </div>
+      </div>
+      <div class="doc-meta">
+        Document&nbsp;: Modèle<br>
+        Réf.&nbsp;: EE-DOC-001<br>
+        Date&nbsp;: 24/06/2026
+      </div>
+    </header>
+
+    <div class="doc-body">
+      <h1 class="doc-title">Titre du document</h1>
+      <p class="doc-subtitle">Sous-titre / type de document</p>
+
+      <h2>Section</h2>
+      <p>
+        Voici la première brique de votre système de documentation : une feuille
+        A4 prête à imprimer, avec l'en-tête et le pied de page Epic Events.
+        Le texte s'écrit ici en noir sur fond blanc pour une impression nette,
+        et les accents violets rappellent l'identité de la marque.
+      </p>
+
+      <div class="callout">
+        <b>Encart.</b> Utilisez ce bloc pour mettre en avant une information clé,
+        une consigne ou un point d'attention.
+      </div>
+
+      <h2>Section suivante</h2>
+      <p>
+        Pour ajouter un deuxième document, dupliquez tout le bloc
+        <code>&lt;section class="page"&gt;…&lt;/section&gt;</code>. Chaque section
+        devient automatiquement une nouvelle feuille A4 à l'impression.
+      </p>
+    </div>
+
+    <footer class="doc-footer">
+      <span>Epic Events — <span class="accent">epiceventslyon@gmail.com</span></span>
+      <span>Page 1</span>
+    </footer>
+
+  </section>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epic Events — Field Kit (style expédition)</title>
+<link rel="stylesheet" href="expedition.css">
+</head>
+<body>
+
+<div class="screen-hint no-print">
+  Aperçu écran — vitrine du style « expédition ». Export PDF : <b>Ctrl + P</b> → « Enregistrer en PDF » → Marges « Aucune » → A4.
+</div>
+
+<!-- ====== DÉFINITIONS D'ICÔNES GRAVÉES (réutilisables) ====== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="i-compass"><circle cx="12" cy="12" r="9"/><polygon points="12,7 14,12 12,17 10,12" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></g>
+    <g id="i-key"><circle cx="8" cy="12" r="3.5"/><line x1="11" y1="12" x2="20" y2="12"/><line x1="17" y1="12" x2="17" y2="15"/><line x1="20" y1="12" x2="20" y2="16"/></g>
+    <g id="i-torch"><path d="M12 3c2 2 3 4 0 7-3-3-2-5 0-7z"/><line x1="12" y1="10" x2="12" y2="20"/><path d="M9 20h6"/></g>
+    <g id="i-mask"><path d="M6 5h12c0 7-2 12-6 14C8 17 6 12 6 5z"/><circle cx="10" cy="10" r="0.9" fill="currentColor" stroke="none"/><circle cx="14" cy="10" r="0.9" fill="currentColor" stroke="none"/></g>
+    <g id="i-fire"><path d="M12 3c1 4 5 5 5 9a5 5 0 1 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3-1-3 0-5 1-8z"/></g>
+    <g id="i-map"><path d="M4 6l5-2 6 2 5-2v14l-5 2-6-2-5 2z"/><line x1="9" y1="4" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="20"/></g>
+    <g id="i-rope"><path d="M5 7c4 3 10-3 14 0M5 12c4 3 10-3 14 0M5 17c4 3 10-3 14 0"/></g>
+    <g id="i-anchor"><circle cx="12" cy="5" r="2"/><line x1="12" y1="7" x2="12" y2="20"/><path d="M5 13a7 7 0 0 0 14 0"/><line x1="8" y1="11" x2="16" y2="11"/></g>
+  </defs>
+</svg>
+
+<!-- ============================================================
+     PAGE VITRINE — STYLE FIELD KIT
+     ============================================================ -->
+<section class="page">
+  <div class="frame"></div>
+
+  <!-- En-tête bois brûlé -->
+  <header class="kit-header">
+    <div class="seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><use href="#i-compass"/></svg></div>
+    <div class="he-center">
+      <div class="he-kicker">Dossier de mission · Field Kit</div>
+      <div class="he-org">Epic Events — Expédition</div>
+    </div>
+    <div class="he-meta">RÉF · EE-EXP-01<br>SECTEUR · Lyon<br>DATE · 24.06.2026</div>
+  </header>
+
+  <!-- Titre principal gravé -->
+  <div class="kit-title">
+    <div class="eyebrow">Carnet d'expédition</div>
+    <h1>The Lost Office</h1>
+    <div class="sub">Retrouver le plan perdu · Guide de l'animateur</div>
+  </div>
+  <div class="rule"><span class="gem"></span></div>
+
+  <!-- Section : Briefing -->
+  <div class="field">
+    <div class="field-h"><svg viewBox="0 0 24 24" fill="none"><use href="#i-map"/></svg> Briefing <span class="no">01</span></div>
+    <div class="field-b">
+      <p class="typed">
+        Un bâtisseur a tenté de monter un nouveau bureau. Il a échoué — et perdu
+        le plan en route. Votre expédition : retrouver ce plan, remonter sa piste
+        et relever les erreurs commises avant de tout reconstruire.
+      </p>
+    </div>
+  </div>
+
+  <!-- Section : Objectifs -->
+  <div class="field">
+    <div class="field-h"><svg viewBox="0 0 24 24" fill="none"><use href="#i-anchor"/></svg> Objectifs <span class="no">02</span></div>
+    <div class="field-b">
+      <ul class="ink-list">
+        <li>Explorer les 8 stations et récupérer chaque fragment du plan.</li>
+        <li>Identifier les fautes du bâtisseur : standards, qualité, équipe, recrutement, délégation.</li>
+        <li>Reconstituer le plan complet avant la tombée du jour.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Note d'attention -->
+  <div class="note">
+    <b>Consigne animateur —</b> garde le fil de l'enquête à chaque étape :
+    chaque épreuve révèle un fragment du plan et une leçon. Reste dans le ton de
+    l'expédition.
+  </div>
+
+  <!-- Rangée d'icônes gravées -->
+  <div class="icon-row">
+    <div class="ic"><svg viewBox="0 0 24 24"><use href="#i-compass"/></svg><span class="cap">Cap</span></div>
+    <div class="ic"><svg viewBox="0 0 24 24"><use href="#i-key"/></svg><span class="cap">Indice</span></div>
+    <div class="ic"><svg viewBox="0 0 24 24"><use href="#i-torch"/></svg><span class="cap">Épreuve</span></div>
+    <div class="ic"><svg viewBox="0 0 24 24"><use href="#i-mask"/></svg><span class="cap">Rôle</span></div>
+    <div class="ic"><svg viewBox="0 0 24 24"><use href="#i-fire"/></svg><span class="cap">Défi</span></div>
+    <div class="ic"><svg viewBox="0 0 24 24"><use href="#i-rope"/></svg><span class="cap">Équipe</span></div>
+  </div>
+
+  <!-- Zone notes animateur -->
+  <div class="field notes-area">
+    <div class="field-h"><svg viewBox="0 0 24 24" fill="none"><use href="#i-torch"/></svg> Notes de l'animateur</div>
+    <div class="field-b"></div>
+  </div>
+
+  <!-- Tampons de validation -->
+  <div class="stamps">
+    <div class="stamp"><svg viewBox="0 0 24 24"><use href="#i-map"/></svg>Plan trouvé</div>
+    <div class="stamp is-validated"><span class="vmark">VALIDÉ</span>Épreuve</div>
+    <div class="stamp"><svg viewBox="0 0 24 24"><use href="#i-key"/></svg>Bonus</div>
+  </div>
+
+  <!-- Pied de page -->
+  <footer class="kit-footer">
+    <span>Epic Events · <span class="accent">The Lost Office</span></span>
+    <span class="pagenum"></span>
+  </footer>
+</section>
+
+</body>
+</html>

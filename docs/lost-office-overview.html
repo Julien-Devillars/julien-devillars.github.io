@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Lost Office — Format Overview (style Koh Lanta)</title>
+<link rel="stylesheet" href="kohlanta.css">
+</head>
+<body>
+
+<div class="screen-hint no-print">
+  Aperçu — style Koh Lanta. Export PDF : <b>Ctrl + P</b> → « Enregistrer en PDF » → Marges « Aucune » → A4.
+</div>
+
+<!-- ====== FILTRES + ICÔNES + DÉCORS (réutilisables) ====== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="rough" x="-10%" y="-30%" width="120%" height="160%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="6"/>
+  </filter>
+
+  <!-- Icônes plates (fill héritée du CSS) -->
+  <g id="ic-sales"><path d="M3 20h18v2H3zM5 18V9h3v9zm5 0V5h3v13zm5 0V11h3v7z"/><path d="M14 5l6-2-1 5z"/></g>
+  <g id="ic-quality"><path fill-rule="evenodd" d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3zm-1.2 13.4l5-5-1.4-1.4-3.6 3.6-1.6-1.6L7.8 12l3 3.4z"/></g>
+  <g id="ic-people"><circle cx="7" cy="8" r="2.4"/><circle cx="17" cy="8" r="2.4"/><circle cx="12" cy="7" r="2.8"/><path d="M2 19c0-3 2.4-5 5-5s5 2 5 5zm10 0c0-3 2.4-5 5-5s5 2 5 5zM6 19c0-3.4 2.7-6 6-6s6 2.6 6 6z"/></g>
+  <g id="ic-coach"><circle cx="16" cy="5" r="2.2"/><path d="M3 21v-2h4v-3h4v-3h5v8z" opacity=".25"/><path d="M2 21l5-5 3 2 6-6 2 2-7 7-3-2-3 4z"/><circle cx="6" cy="9" r="2.2"/></g>
+  <g id="ic-flag"><path d="M6 2v20H4V2zm2 1l11 2.5L8 9z"/></g>
+  <g id="ic-pin"><path fill-rule="evenodd" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 4.5A2.5 2.5 0 1 1 12 11a2.5 2.5 0 0 1 0-4.5z"/></g>
+  <g id="ic-fork"><path d="M6 2v7a2 2 0 0 0 2 2v11h1V11a2 2 0 0 0 2-2V2h-1v6h-1V2h-1v6H7V2zm10 0c-1.6 0-2.5 2-2.5 5 0 2.2 1 3.2 2 3.5V22h1V2z"/></g>
+  <g id="ic-summit"><path d="M2 21l6-12 3 5 3-7 8 14z"/><path d="M12 3v6l4-1.5L12 6z"/></g>
+  <g id="ic-stamp"><path d="M9 2h6v5l1 3H8l1-3zM5 15h14v2H5zm-1 4h16v3H4z"/></g>
+  <g id="ic-camera"><path d="M9 4l-1.5 2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.5L15 4zm3 5a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"/></g>
+  <g id="ic-shoe"><path d="M2 16c0-2 1-3 3-3l4-3 1 2 2-1 1 2 2-1 6 4c1 .6 1 2 0 3H3a1 1 0 0 1-1-1z"/></g>
+  <g id="ic-podium"><path d="M9 9h6v13H9zM2 14h6v8H2zm14 3h6v5h-6z"/></g>
+  <g id="ic-speech"><path d="M4 4h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" transform="translate(-1 1)"/></g>
+  <g id="ic-no"><path fill-rule="evenodd" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 3a7 7 0 0 1 5.3 11.5L7.5 6.7A7 7 0 0 1 12 5zM6.7 7.5l9.8 9.8A7 7 0 0 1 6.7 7.5z"/></g>
+  <g id="ic-split"><circle cx="6" cy="7" r="2.2"/><circle cx="18" cy="7" r="2.2"/><path d="M2 18c0-2.6 1.8-4.5 4-4.5s4 1.9 4 4.5zm12 0c0-2.6 1.8-4.5 4-4.5s4 1.9 4 4.5z"/><path d="M11 3l2 18h-1.6l-2-18z" fill="#cb2a20"/></g>
+</defs></svg>
+
+<!-- ============================================================
+     PAGE — FORMAT OVERVIEW
+     ============================================================ -->
+<section class="page">
+
+  <!-- Décors -->
+  <div class="deco deco--mtn-tr"><svg viewBox="0 0 100 70"><path d="M0 70 L26 22 L40 40 L55 8 L70 34 L100 70 Z" fill="#160b08"/><path d="M55 8 L60 16 L50 18 Z M26 22 L30 28 L21 30 Z" fill="#2a1410"/></svg></div>
+  <div class="deco deco--palm-tl"><svg viewBox="0 0 100 100"><g fill="#160b08"><path d="M50 100C48 70 44 50 30 38c14 4 20 14 22 24 2-12 0-26-8-40 12 8 16 22 16 34 4-10 12-18 26-22-12 10-20 22-22 36 8-8 18-12 30-10-14 4-26 14-32 30z"/></g></svg></div>
+  <div class="deco deco--palm-bl"><svg viewBox="0 0 100 100"><g fill="#160b08"><path d="M50 100C52 74 50 56 40 44 28 50 22 62 22 74c-4-14 2-28 16-34C44 28 56 26 70 30 58 34 50 42 48 52c10-10 24-12 38-6-16 2-30 12-36 28z"/></g></svg></div>
+  <div class="deco deco--palm-br"><svg viewBox="0 0 100 100"><g fill="#160b08"><path d="M50 100C52 74 50 56 40 44 28 50 22 62 22 74c-4-14 2-28 16-34C44 28 56 26 70 30 58 34 50 42 48 52c10-10 24-12 38-6-16 2-30 12-36 28z"/></g></svg></div>
+
+  <!-- Tampons -->
+  <div class="seal" style="position:absolute;top:30mm;left:14mm;z-index:3">
+    <svg viewBox="0 0 100 100"><defs><path id="c1" d="M50 50 m-36 0 a36 36 0 1 1 72 0 a36 36 0 1 1 -72 0"/></defs>
+      <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="50" cy="50" r="33" fill="none" stroke="currentColor" stroke-width="1"/>
+      <text font-family="Oswald, sans-serif" font-weight="700" font-size="11" letter-spacing="2" fill="currentColor">
+        <textPath href="#c1" startOffset="2%">EXPLORE ★ CHALLENGE ★ </textPath></text>
+      <path d="M34 60 L46 40 L52 50 L60 34 L70 60 Z" fill="currentColor"/>
+    </svg>
+  </div>
+  <div class="seal seal--red" style="position:absolute;top:120mm;right:13mm;z-index:3">
+    <svg viewBox="0 0 100 100"><defs><path id="c2" d="M50 50 m-36 0 a36 36 0 1 1 72 0 a36 36 0 1 1 -72 0"/></defs>
+      <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="50" cy="50" r="33" fill="none" stroke="currentColor" stroke-width="1"/>
+      <text font-family="Oswald, sans-serif" font-weight="700" font-size="10.5" letter-spacing="1.5" fill="currentColor">
+        <textPath href="#c2" startOffset="0%">NO EXCUSES ★ JUST ACTION ★ </textPath></text>
+      <path d="M44 38c4-2 8 0 8 5 0 4-3 6-3 10h-5c0-5-4-6-4-11 0-2 1-3 4-4z" fill="currentColor"/>
+      <circle cx="44" cy="62" r="1.6" fill="currentColor"/><circle cx="49" cy="63" r="1.6" fill="currentColor"/><circle cx="54" cy="62" r="1.6" fill="currentColor"/>
+    </svg>
+  </div>
+
+  <!-- Titre -->
+  <div class="lo-title">
+    <h1>THE LOST OFFICE</h1>
+    <div class="sub">FORMAT OVERVIEW</div>
+  </div>
+  <p class="tagline-top">Independence = faire le bon choix sans qu'on vous le dise.</p>
+
+  <!-- Roue Independence Index -->
+  <div class="wheel-wrap">
+    <div class="wheel">
+      <div class="seg tl"><svg viewBox="0 0 24 24"><use href="#ic-sales"/></svg><b>Sales</b></div>
+      <div class="seg tr"><svg viewBox="0 0 24 24"><use href="#ic-quality"/></svg><b>Quality</b></div>
+      <div class="seg bl"><svg viewBox="0 0 24 24"><use href="#ic-people"/></svg><b>Recruit</b></div>
+      <div class="seg br"><svg viewBox="0 0 24 24"><use href="#ic-coach"/></svg><b>Coaching</b></div>
+      <div class="hub"><small>INDEPENDENCE</small><b>INDEX</b></div>
+    </div>
+  </div>
+
+  <!-- 4 étapes -->
+  <div class="steps">
+    <div class="step">
+      <div class="badge-row"><span class="num">1</span><span class="head">8 Stations</span></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><use href="#ic-pin"/></svg></div>
+      <p>Stations obligatoires. On gagne des tampons, basés sur les 4 axes de l'Independence Index.</p>
+    </div>
+    <div class="step">
+      <div class="badge-row"><span class="num">2</span><span class="head">4 Bonus</span></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><use href="#ic-camera"/></svg></div>
+      <p>Zones bonus optionnelles, secrètes, sans animateur. Preuve photo/vidéo + mot de code.</p>
+    </div>
+    <div class="step">
+      <div class="badge-row"><span class="num">3</span><span class="head">4 Jeux</span></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><use href="#ic-people"/></svg></div>
+      <p>Défis d'équipe plus larges, plus tard dans la journée.</p>
+    </div>
+    <div class="step">
+      <div class="badge-row"><span class="num">4</span><span class="head">Summit</span></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><use href="#ic-summit"/></svg></div>
+      <p>Sujet final de 20 min + annonce des gagnants par l'équipe Événement.</p>
+    </div>
+  </div>
+
+  <!-- Flow -->
+  <div class="flow">
+    <div class="node"><div class="disc"><svg viewBox="0 0 24 24"><use href="#ic-flag"/></svg></div><span>Start</span></div>
+    <span class="arrow">➤</span>
+    <div class="node"><div class="disc"><svg viewBox="0 0 24 24"><use href="#ic-pin"/></svg></div><span>Stations</span></div>
+    <span class="arrow">➤</span>
+    <div class="node"><div class="disc"><svg viewBox="0 0 24 24"><use href="#ic-fork"/></svg></div><span>Lunch cutoff</span></div>
+    <span class="arrow">➤</span>
+    <div class="node"><div class="disc"><svg viewBox="0 0 24 24"><use href="#ic-people"/></svg></div><span>Jeux d'équipe</span></div>
+    <span class="arrow">➤</span>
+    <div class="node"><div class="disc"><svg viewBox="0 0 24 24"><use href="#ic-summit"/></svg></div><span>Summit</span></div>
+  </div>
+
+  <!-- Scoring + Anti-cheat -->
+  <div class="cols">
+    <div class="panel panel--green">
+      <h3><span class="star">★</span> Scoring <span class="star">★</span></h3>
+      <div class="score-row">
+        <div class="it"><svg viewBox="0 0 24 24"><use href="#ic-stamp"/></svg><b>Tampon<br>10 pts</b></div>
+        <div class="it"><svg viewBox="0 0 24 24"><use href="#ic-camera"/></svg><b>Bonus<br>5 pts</b></div>
+        <div class="it"><svg viewBox="0 0 24 24"><use href="#ic-shoe"/></svg><b>Extra mile<br>15 pts</b></div>
+        <div class="it"><svg viewBox="0 0 24 24"><use href="#ic-podium"/></svg><b>Jeux<br>classés</b></div>
+      </div>
+    </div>
+    <div class="panel panel--paper">
+      <h3>☠ Anti-cheat ☠</h3>
+      <ul class="rules">
+        <li><svg viewBox="0 0 24 24"><use href="#ic-people"/></svg> Équipe entière sur la preuve</li>
+        <li><svg viewBox="0 0 24 24"><use href="#ic-speech"/></svg> Mot de code visible ou dit</li>
+        <li><svg viewBox="0 0 24 24"><use href="#ic-no"/></svg> Pas de preuve = pas de points</li>
+        <li><svg viewBox="0 0 24 24"><use href="#ic-split"/></svg> Interdit de séparer l'équipe</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Tagline pied -->
+  <div class="tagline"><span class="star">★</span> Explore. Solve. Earn. Win. <span class="star">★</span></div>
+  <div class="pagenum no-print"></div>
+
+</section>
+
+</body>
+</html>

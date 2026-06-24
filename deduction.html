@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini-jeu — Enquête Recrutement</title>
+  <!-- Vocabulaire : "tricheur" = rôle cible à démasquer / "menteur" = mécanique de carte fausse -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0f0f1a;
+      --panel: rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.12);
+      --accent: #8250ff;
+      --accent2: #bf5fff;
+      --danger: #ff4d6d;
+      --ok: #00e676;
+      --txt: #ffffff;
+      --muted: rgba(255,255,255,0.45);
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--txt);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    a.home {
+      position: fixed; top: 16px; left: 16px;
+      color: var(--muted); text-decoration: none;
+      font-size: 0.85rem; z-index: 10;
+      padding: 6px 12px; border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      transition: background .15s;
+    }
+    a.home:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+    .header { text-align: center; margin: 8px 0 24px; }
+    .badge {
+      display: inline-block;
+      background: rgba(130,80,255,0.15);
+      border: 1px solid rgba(130,80,255,0.4);
+      color: var(--accent2);
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 4px 14px; border-radius: 999px; margin-bottom: 12px;
+    }
+    h1 { font-size: 1.8rem; color: #ede4ff; }
+    .subtitle { font-size: 0.88rem; color: var(--muted); margin-top: 4px; }
+
+    .screen { width: min(900px, 96vw); }
+    .hidden { display: none !important; }
+
+    /* ─── Sélection de niveau ─── */
+    .levels { display: flex; flex-direction: column; gap: 22px; }
+    .level-group h2 {
+      font-size: 1rem; color: #cbb8ff; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .level-group h2 .pill {
+      font-size: 0.7rem; color: var(--muted); font-weight: 500;
+      background: rgba(255,255,255,0.06); padding: 2px 10px; border-radius: 999px;
+    }
+    .puzzle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+      gap: 10px;
+    }
+    .puzzle-btn {
+      aspect-ratio: 1;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: #fff; font-size: 1.1rem; font-weight: 700;
+      cursor: pointer; position: relative;
+      transition: transform .12s, border-color .15s, background .15s;
+    }
+    .puzzle-btn:hover { transform: translateY(-3px); border-color: var(--accent); background: rgba(130,80,255,0.12); }
+    .puzzle-btn.solved { border-color: var(--ok); }
+    .puzzle-btn.solved::after {
+      content: "✓"; position: absolute; top: 3px; right: 6px;
+      font-size: 0.7rem; color: var(--ok);
+    }
+
+    /* ─── Plateau de jeu ─── */
+    .game-top {
+      display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+      margin-bottom: 8px;
+    }
+    .stat {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 18px; text-align: center; min-width: 120px;
+    }
+    .stat .num { font-size: 1.5rem; font-weight: 800; }
+    .stat .lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .stat.comp .num { color: var(--danger); }
+    .stat.liar .num { color: #ffb648; }
+
+    .info-bar {
+      text-align: center; font-size: 0.85rem; color: var(--muted);
+      margin: 6px 0 18px;
+    }
+    .info-bar b { color: #d9c8ff; }
+
+    .candidates {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 26px 18px;
+      margin-bottom: 24px;
+      align-items: start;
+      justify-items: center;
+    }
+
+    .char {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      width: 100%;
+      max-width: 260px;
+    }
+
+    /* ─ Bulle de dialogue ─ */
+    .char .bubble {
+      position: relative;
+      background: #fdf6ec;
+      color: #1d2433;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 0.92rem;
+      line-height: 1.4;
+      font-weight: 600;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+      margin-bottom: 18px;
+      width: 100%;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .char .bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -11px; left: 50%;
+      transform: translateX(-50%);
+      border: 12px solid transparent;
+      border-top-color: #fdf6ec;
+      border-bottom: 0;
+      filter: drop-shadow(0 4px 3px rgba(0,0,0,0.18));
+    }
+
+    /* ─ Portrait ─ */
+    .char .portrait-wrap {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 3px solid transparent;
+      transition: transform .12s, box-shadow .15s, border-color .15s;
+      width: 100%;
+    }
+    .char .portrait-wrap img { display: block; width: 100%; height: auto; }
+    .char:hover .portrait-wrap {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(130,80,255,0.35);
+    }
+    .char.selected .portrait-wrap {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px rgba(255,77,109,0.3), 0 12px 30px rgba(255,77,109,0.4);
+    }
+    .char.selected .portrait-wrap::after {
+      content: "TRICHEUR";
+      position: absolute;
+      top: 16px; left: 50%;
+      transform: translate(-50%,0) rotate(-9deg);
+      background: var(--danger); color: #fff;
+      font-weight: 800; font-size: 0.82rem; letter-spacing: .08em;
+      padding: 6px 16px; border-radius: 6px;
+      box-shadow: 0 5px 14px rgba(0,0,0,0.45);
+      pointer-events: none;
+    }
+
+    /* ─ Verdict révélé ─ */
+    .char .verdict {
+      margin-top: 12px;
+      font-size: 0.8rem; font-weight: 800; letter-spacing: .05em;
+      padding: 5px 16px; border-radius: 999px;
+    }
+    .char .verdict.comp    { background: rgba(255,77,109,0.18); color: var(--danger); border: 1px solid var(--danger); }
+    .char .verdict.sincere { background: rgba(0,230,118,0.14);  color: var(--ok);     border: 1px solid rgba(0,230,118,0.45); }
+
+    .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+    button.act {
+      padding: 14px 28px; font-size: 0.95rem; font-weight: 700;
+      border: none; border-radius: 12px; cursor: pointer;
+      transition: transform .12s, opacity .15s, box-shadow .15s;
+    }
+    button.act:disabled { opacity: 0.4; cursor: not-allowed; }
+    button.primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+    button.primary:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(130,80,255,0.4); }
+    button.ghost { background: rgba(255,255,255,0.07); border: 1px solid var(--border); color: #fff; }
+    button.ghost:hover { background: rgba(255,255,255,0.13); }
+
+    .feedback {
+      text-align: center; font-size: 1.05rem; font-weight: 600;
+      min-height: 1.5em; margin-bottom: 16px; transition: opacity .2s;
+    }
+    .feedback.win { color: var(--ok); }
+    .feedback.lose { color: var(--danger); }
+
+    /* ─── Règles ─── */
+    details.rules {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 12px; padding: 4px 18px; margin-bottom: 20px;
+      font-size: 0.88rem;
+    }
+    details.rules summary {
+      cursor: pointer; padding: 12px 0; font-weight: 700; color: #cbb8ff;
+      list-style: none;
+    }
+    details.rules summary::-webkit-details-marker { display: none; }
+    details.rules summary::before { content: "📖 "; }
+    details.rules[open] summary::before { content: "📖 "; }
+    .rules-body { padding: 0 0 14px; line-height: 1.6; color: rgba(255,255,255,0.7); }
+    .rules-body ul { margin: 8px 0 8px 18px; }
+    .rules-body b { color: #e6dcff; }
+
+    @media (max-width: 520px) {
+      .cand-clue { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<a class="home" href="index.html">← Accueil</a>
+
+<div class="header">
+  <div class="badge">🕵️ Mini-jeu — Enquête</div>
+  <h1 id="title">Recrutement sous surveillance</h1>
+  <p class="subtitle" id="subtitle">Démasquez les tricheurs cachés parmi les candidats</p>
+</div>
+
+<!-- ─── Écran 1 : sélection ─── -->
+<div class="screen" id="levelScreen">
+  <details class="rules">
+    <summary>Comment jouer ?</summary>
+    <div class="rules-body">
+      Des candidats passent un entretien. Certains sont en réalité des <b>tricheurs</b> qui cherchent à vous induire en erreur — les autres sont <b>sincères</b>.
+      Chaque candidat porte une <b>carte-indice</b>. À vous de démasquer les tricheurs !
+      <ul>
+        <li>Chaque candidat <b>dit la vérité</b> ou <b>ment</b> — c'est indépendant du fait d'être tricheur ou non.</li>
+        <li>Un candidat qui <b>dit la vérité</b> porte une carte <b>vraie</b>.</li>
+        <li>Un candidat qui <b>ment</b> porte une carte <b>fausse</b>.</li>
+        <li>Les candidats sont disposés <b>en cercle</b>, dans l'ordre des <b>numéros inscrits sur leurs cartes</b> (le n°1 est voisin du dernier). « À côté de moi » = voisins directs dans le cercle.</li>
+        <li>On vous indique combien il y a de <b>tricheurs</b> et de <b>menteurs</b>. Déduisez le reste !</li>
+      </ul>
+      Sélectionnez le bon nombre de tricheurs puis validez.
+    </div>
+  </details>
+  <div class="levels" id="levels"></div>
+</div>
+
+<!-- ─── Écran 2 : jeu ─── -->
+<div class="screen hidden" id="gameScreen">
+  <div class="game-top">
+    <div class="stat"><div class="num" id="statPlayers">0</div><div class="lbl">Candidats</div></div>
+    <div class="stat comp"><div class="num" id="statComp">0</div><div class="lbl">Tricheurs à trouver</div></div>
+    <div class="stat liar"><div class="num" id="statLiar">0</div><div class="lbl">Menteurs</div></div>
+  </div>
+  <div class="info-bar">
+    Sélectionnés : <b id="selCount">0</b> / <b id="selTarget">0</b> tricheur(s) ·
+    Disposés <b>en cercle</b> 🔄 (le n° de carte = la place dans le cercle) ·
+    cliquez un portrait pour l'accuser
+  </div>
+
+  <div class="candidates" id="candidates"></div>
+
+  <div class="feedback" id="feedback"></div>
+
+  <div class="actions">
+    <button class="act primary" id="validateBtn" onclick="validate()" disabled>Valider mon enquête</button>
+    <button class="act ghost" id="solutionBtn" onclick="showSolution()">Voir la solution</button>
+    <button class="act ghost" onclick="backToLevels()">← Changer de partie</button>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+  const D = window.GAME_DATA;
+  const CAND = D.candidates;
+  const CARDS = D.cards;
+
+  const ROLE_EMOJI = {
+    "Ingénieur": "🛠️", "Designer": "🎨", "Commercial": "💼",
+    "Développeur": "💻", "Manager": "📊", "Recrutement Humain": "🤝",
+    "Data Analyst": "📈",
+  };
+
+  // Persistance des parties résolues
+  const SOLVED_KEY = "deduction_solved";
+  function getSolved() {
+    try { return JSON.parse(localStorage.getItem(SOLVED_KEY)) || {}; }
+    catch(e) { return {}; }
+  }
+  function markSolved(id) {
+    const s = getSolved(); s[id] = true;
+    localStorage.setItem(SOLVED_KEY, JSON.stringify(s));
+  }
+
+  let currentPuzzle = null;
+  let selected = new Set();
+  let revealed = false;
+
+  // ─── Écran de sélection ───────────────────────────────────────────
+  function renderLevels() {
+    const solved = getSolved();
+    const byPlayers = {};
+    D.fiches.forEach(f => {
+      (byPlayers[f.players] = byPlayers[f.players] || []).push(f);
+    });
+
+    const DIFF = {3:"Facile", 4:"Facile +", 5:"Moyen", 6:"Difficile", 7:"Expert"};
+    const container = document.getElementById("levels");
+    container.innerHTML = "";
+
+    Object.keys(byPlayers).sort((a,b)=>a-b).forEach(p => {
+      const group = document.createElement("div");
+      group.className = "level-group";
+      const done = byPlayers[p].filter(f => solved[f.id]).length;
+      group.innerHTML = `<h2>${DIFF[p]||"?"} — ${p} candidats
+        <span class="pill">${done}/${byPlayers[p].length} résolus</span></h2>`;
+      const grid = document.createElement("div");
+      grid.className = "puzzle-grid";
+      byPlayers[p].forEach((f, i) => {
+        const btn = document.createElement("button");
+        btn.className = "puzzle-btn" + (solved[f.id] ? " solved" : "");
+        btn.textContent = i + 1;
+        btn.onclick = () => startPuzzle(f);
+        grid.appendChild(btn);
+      });
+      group.appendChild(grid);
+      container.appendChild(group);
+    });
+  }
+
+  // ─── Démarrer une partie ──────────────────────────────────────────
+  function startPuzzle(f) {
+    currentPuzzle = f;
+    selected = new Set();
+    revealed = false;
+    document.getElementById("levelScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+
+    document.getElementById("statPlayers").textContent = f.players;
+    document.getElementById("statComp").textContent = f.n_comp;
+    document.getElementById("statLiar").textContent = f.n_liar;
+    document.getElementById("selTarget").textContent = f.n_comp;
+
+    document.getElementById("feedback").textContent = "";
+    document.getElementById("feedback").className = "feedback";
+    document.getElementById("solutionBtn").textContent = "Voir la solution";
+
+    renderCandidates();
+    updateSelCount();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  function renderCandidates() {
+    const f = currentPuzzle;
+    const wrap = document.getElementById("candidates");
+    wrap.innerHTML = "";
+    f.active.forEach((id, idx) => {
+      const c = CAND[id];
+      const cardId = f.hand[idx];
+      const clue = CARDS[cardId].translated;
+      const el = document.createElement("div");
+      el.className = "char" + (selected.has(id) ? " selected" : "");
+      el.dataset.id = id;
+      el.innerHTML = `
+        <div class="bubble">« ${clue} »</div>
+        <div class="portrait-wrap">
+          <img src="${c.img}" alt="${c.role} — ${c.name}" loading="lazy">
+        </div>
+        <div class="verdict" hidden></div>`;
+      el.onclick = () => toggleSelect(id, el);
+      wrap.appendChild(el);
+    });
+  }
+
+  function toggleSelect(id, el) {
+    if (revealed) return;
+    if (selected.has(id)) {
+      selected.delete(id);
+    } else {
+      if (selected.size >= currentPuzzle.n_comp) {
+        // Remplace la plus ancienne sélection si on dépasse
+        flash(el);
+        return;
+      }
+      selected.add(id);
+    }
+    el.classList.toggle("selected", selected.has(id));
+    updateSelCount();
+  }
+
+  function flash(el) {
+    el.animate(
+      [{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(0)"}],
+      {duration:250}
+    );
+  }
+
+  function updateSelCount() {
+    document.getElementById("selCount").textContent = selected.size;
+    document.getElementById("validateBtn").disabled =
+      (selected.size !== currentPuzzle.n_comp) || revealed;
+  }
+
+  // ─── Validation ───────────────────────────────────────────────────
+  function validate() {
+    const fb = document.getElementById("feedback");
+    const answer = new Set(currentPuzzle.answer);
+    const correct = selected.size === answer.size &&
+                    [...selected].every(id => answer.has(id));
+    if (correct) {
+      fb.textContent = "🎉 Bravo ! Vous avez démasqué les bons tricheurs.";
+      fb.className = "feedback win";
+      markSolved(currentPuzzle.id);
+      revealStates(true);
+    } else {
+      fb.textContent = "❌ Ce n'est pas la bonne combinaison. Réessayez !";
+      fb.className = "feedback lose";
+    }
+  }
+
+  function showSolution() {
+    const fb = document.getElementById("feedback");
+    const roles = currentPuzzle.answer.map(id => CAND[id].role).join(", ");
+    fb.textContent = `💡 Tricheur(s) : ${roles}`;
+    fb.className = "feedback";
+    revealStates(false);
+  }
+
+  // Affiche le verdict tricheur/sincère sous chaque portrait
+  function revealStates(won) {
+    revealed = true;
+    const answer = new Set(currentPuzzle.answer);
+    document.querySelectorAll(".char").forEach(el => {
+      const id = +el.dataset.id;
+      const v = el.querySelector(".verdict");
+      if (answer.has(id)) {
+        v.className = "verdict comp"; v.textContent = "🚩 Tricheur";
+      } else {
+        v.className = "verdict sincere"; v.textContent = "✓ Sincère";
+      }
+      v.hidden = false;
+    });
+    document.getElementById("validateBtn").disabled = true;
+    document.getElementById("solutionBtn").textContent = "Solution affichée";
+  }
+
+  function backToLevels() {
+    document.getElementById("gameScreen").classList.add("hidden");
+    document.getElementById("levelScreen").classList.remove("hidden");
+    renderLevels();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  // ─── Init ─────────────────────────────────────────────────────────
+  renderLevels();
+</script>
+</body>
+</html>
