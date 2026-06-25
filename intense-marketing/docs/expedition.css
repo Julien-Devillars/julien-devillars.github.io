@@ -405,6 +405,28 @@ body {
 }
 
 /* ============================================================
+   PLAN DU PARCOURS
+   ============================================================ */
+.map-wrap {
+  position: relative;
+  flex: 1;
+  border: 2px solid var(--line);
+  overflow: hidden;
+  margin-bottom: 5mm;
+}
+.map-wrap::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: rgba(122,62,24,.06);
+  pointer-events: none; z-index: 1;
+}
+.map-img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  filter: sepia(0.45) contrast(1.1) brightness(1.03) saturate(0.72);
+}
+
+/* ============================================================
    FEUILLE DE SCORES — PAGE DÉDIÉE
    ============================================================ */
 .ss-table {
