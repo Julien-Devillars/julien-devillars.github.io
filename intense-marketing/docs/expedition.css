@@ -405,6 +405,63 @@ body {
 }
 
 /* ============================================================
+   TABLEAU DE SCORES — STATIONS
+   ============================================================ */
+.score-wrap { margin-top: auto; margin-bottom: 0; }
+.score-wrap + .doc-foot { margin-top: 4mm; }
+.score-table {
+  width: 100%; border-collapse: collapse; table-layout: fixed;
+}
+.score-table th {
+  background: var(--brown); color: var(--paper);
+  font-family: var(--f-head); font-weight: 700; font-size: 7.5px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 2mm 1mm; border: 1px solid var(--brown); text-align: center;
+}
+.score-table th.sc-label {
+  text-align: left; padding-left: 3mm; width: 22mm;
+  font-size: 9px; letter-spacing: 2px;
+}
+.score-table td {
+  border: 1px solid var(--line); height: 8mm;
+  padding: 0; text-align: center; vertical-align: middle;
+}
+.score-table td.sc-row-label {
+  background: rgba(122,62,24,.08);
+  font-family: var(--f-head); font-size: 7.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px; color: var(--brown);
+  text-align: left; padding: 2mm 3mm;
+}
+.sc-input {
+  width: 100%; height: 100%; border: none; background: transparent;
+  text-align: center; font-family: var(--f-type); font-size: 11px;
+  color: var(--ink); outline: none; padding: 0; display: block;
+  -moz-appearance: textfield;
+}
+.sc-input::-webkit-outer-spin-button,
+.sc-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.sc-input:focus { background: rgba(200,90,26,.08); }
+
+/* Barre d'envoi — écran uniquement */
+.send-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: var(--brown); padding: 7px 20px;
+  display: flex; justify-content: center; align-items: center; gap: 16px;
+  box-shadow: 0 -3px 12px rgba(0,0,0,.4);
+}
+.send-bar-label {
+  font-family: var(--f-type); font-size: 9px; letter-spacing: 2px;
+  color: rgba(232,213,168,.65); text-transform: uppercase;
+}
+.send-bar-btn {
+  background: var(--orange); color: #fff; border: none;
+  font-family: var(--f-head); font-weight: 700; font-size: 11px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 7px 20px; cursor: pointer;
+}
+.send-bar-btn:hover { background: #a34812; }
+
+/* ============================================================
    IMPRESSION
    ============================================================ */
 @media print {
