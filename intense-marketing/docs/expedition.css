@@ -295,6 +295,7 @@ body {
 
 /* Conditions victoire / échec (2 colonnes) */
 .conds { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; margin: 0 0 4mm; }
+.conds-3 { grid-template-columns: 1fr 1fr 1fr; }
 .cond { border: 1px solid var(--line); padding: 3mm 4mm; }
 .cond .k {
   font-family: var(--f-head); font-size: 9px; letter-spacing: 1px;
@@ -302,9 +303,20 @@ body {
 }
 .cond--win { border-color: #2d7a2d; background: #f2faf2; }
 .cond--win .k { color: #1e6b1e; }
+.cond--bonus { border-color: var(--orange); background: #fff8f4; }
+.cond--bonus .k { color: #a34000; }
 .cond--fail { border-color: #b02020; background: #fdf2f2; }
 .cond--fail .k { color: #9a1a1a; }
 .cond p { font-family: var(--f-body); font-size: 11px; line-height: 1.5; margin: 0; color: var(--ink); }
+.cond .stamps {
+  display: inline-block; margin-top: 2mm;
+  font-family: var(--f-type); font-size: 9px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  background: var(--brown); color: var(--paper); padding: 1mm 3mm;
+}
+.cond--win .stamps { background: #1e6b1e; }
+.cond--bonus .stamps { background: var(--orange); }
+.cond--fail .stamps { background: #9a1a1a; }
 
 /* Étiquette de thème */
 .theme-tag {
@@ -464,6 +476,10 @@ body {
 .ss-total-label {
   font-family: var(--f-head); font-weight: 700; font-size: 11px;
   letter-spacing: 3px; text-transform: uppercase; color: var(--brown);
+}
+.ss-max {
+  font-family: var(--f-type); font-size: 9px; font-weight: 400;
+  color: var(--muted); letter-spacing: 0;
 }
 
 /* ============================================================
